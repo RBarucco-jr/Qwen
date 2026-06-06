@@ -1,5 +1,7 @@
 # Config Manager CLI
 
+![CI](https://github.com/RBarucco-jr/Qwen/actions/workflows/ci.yml/badge.svg)
+
 CLI em Python para organizar, validar, converter, mesclar e comparar arquivos de configuração.
 
 Suporta **JSON, YAML, TOML, INI e .env**.
