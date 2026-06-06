@@ -7,7 +7,8 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-*.egg-info
+eggs/
+*.egg
 
 # Virtual environment
 .venv/
@@ -19,13 +20,27 @@ env/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS
 .DS_Store
 Thumbs.db
+.desktop
 
 # Test/coverage
 .pytest_cache/
 .coverage
 htmlcov/
 .mypy_cache/
+.ruff_cache/
+
+# Packaging
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environments
+.env.local
+.env.*.local
+
+# Project specific
+*.log
