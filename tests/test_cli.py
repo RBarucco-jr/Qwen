@@ -245,3 +245,25 @@ class TestCLIDiff:
     def test_diff_file_not_found(self) -> None:
         result = runner.invoke(app, ["diff", "/nonexistent.json", "/other.json"])
         assert result.exit_code == 1
+
+
+class TestMainEntryPoint:
+    def test_main_invokes_app(self) -> None:
+        from unittest.mock import patch
+
+        from config_manager.cli import main
+
+        with patch("config_manager.cli.app") as mock_app:
+            main()
+            mock_app.assert_called_once()
+
+    def test_main_module_entry(self) -> None:
+        import subprocess
+
+        result = subprocess.run(
+            ["python", "-m", "config_manager.cli", "--help"],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0
+        assert "Validate" in result.stdout
