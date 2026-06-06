@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import pytest
+import toml
 import typer
 import yaml
 
@@ -107,3 +108,27 @@ class TestRunMerge:
         base.write_text(yaml.dump({"a": 1}))
         with pytest.raises((SystemExit, typer.Exit)):
             run_merge(str(base), ("/nonexistent/override.yaml",), None)
+
+    def test_merge_toml_files(self, tmp_path: Path) -> None:
+        base = tmp_path / "base.toml"
+        override = tmp_path / "override.toml"
+        output = tmp_path / "merged.json"
+
+        base.write_text(toml.dumps({"database": {"host": "localhost", "port": 5432}}))
+        override.write_text(toml.dumps({"database": {"host": "dev.local"}}))
+
+        run_merge(str(base), (str(override),), str(output))
+
+        data = json.loads(output.read_text())
+        assert data["database"]["host"] == "dev.local"
+        assert data["database"]["port"] == 5432
+
+    def test_merge_no_output_prints_to_stdout(self, tmp_path: Path) -> None:
+        base = tmp_path / "base.yaml"
+        override = tmp_path / "override.yaml"
+
+        base.write_text(yaml.dump({"database": {"host": "localhost", "port": 5432}}))
+        override.write_text(yaml.dump({"database": {"host": "dev.local"}}))
+
+        # No output file — prints to console (no crash)
+        run_merge(str(base), (str(override),), None)
