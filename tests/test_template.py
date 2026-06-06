@@ -108,3 +108,13 @@ class TestRunTemplate:
         tpl.write_text("host: ${DB_HOST}\n")
         with pytest.raises((SystemExit, typer.Exit)):
             run_template(str(tpl), "/nonexistent/.env", None)
+
+    def test_template_no_output_prints_to_stdout(self, tmp_path: Path) -> None:
+        tpl = tmp_path / "config.tpl"
+        env = tmp_path / ".env"
+
+        tpl.write_text("host: ${DB_HOST}\n")
+        env.write_text("DB_HOST=prod.example.com\n")
+
+        # No output file — prints to console (no crash)
+        run_template(str(tpl), str(env), None)
