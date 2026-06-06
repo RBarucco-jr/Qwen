@@ -1,6 +1,7 @@
 # Config Manager CLI
 
 ![CI](https://github.com/RBarucco-jr/Qwen/actions/workflows/ci.yml/badge.svg)
+![Coverage](https://codecov.io/github/RBarucco-jr/Qwen/branch/master/graph/badge.svg)
 
 CLI em Python para organizar, validar, converter, mesclar e comparar arquivos de configuração.
 
