@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 
 import pytest
-import yaml
 import toml
+import yaml
 
 from config_manager.utils.format_detector import detect_format, load_config
 
