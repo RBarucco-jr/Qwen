@@ -53,4 +53,4 @@ def load_config(file_path: Path) -> dict:
     if fmt == "env":
         return dict(dotenv_values(dotenv_path=file_path))
 
-    raise ValueError(f"Unsupported format: {fmt}")
+    raise ValueError(f"Unsupported format: {fmt}")  # pragma: no cover

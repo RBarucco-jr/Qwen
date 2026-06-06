@@ -41,6 +41,11 @@ class TestDetectFormat:
     def test_detect_toml(self, tmp_path: Path) -> None:
         assert detect_format(tmp_path / "config.toml") == "toml"
 
+    def test_detect_ini(self, tmp_path: Path) -> None:
+        assert detect_format(tmp_path / "config.ini") == "ini"
+        assert detect_format(tmp_path / "config.cfg") == "ini"
+        assert detect_format(tmp_path / "config.conf") == "ini"
+
     def test_detect_env(self, tmp_path: Path) -> None:
         assert detect_format(tmp_path / ".env") == "env"
         assert detect_format(tmp_path / ".env.local") == "env"
@@ -61,10 +66,35 @@ class TestLoadConfig:
         assert data["database"]["host"] == "localhost"
         assert data["database"]["port"] == 5432
 
+    def test_load_yaml_non_dict_returns_empty(self, tmp_path: Path) -> None:
+        f = tmp_path / "list.yaml"
+        f.write_text("- item1\n- item2\n")
+        data = load_config(f)
+        assert data == {}
+
     def test_load_toml(self, tmp_configs: dict[str, Path]) -> None:
         data = load_config(tmp_configs["toml"])
         assert data["database"]["host"] == "localhost"
         assert data["database"]["port"] == 5432
+
+    def test_load_ini(self, tmp_path: Path) -> None:
+        f = tmp_path / "config.ini"
+        f.write_text("[database]\nhost = localhost\nport = 5432\n")
+        data = load_config(f)
+        assert data["database"]["host"] == "localhost"
+        assert data["database"]["port"] == "5432"
+
+    def test_load_ini_cfg_extension(self, tmp_path: Path) -> None:
+        f = tmp_path / "config.cfg"
+        f.write_text("[database]\nhost = localhost\n")
+        data = load_config(f)
+        assert data["database"]["host"] == "localhost"
+
+    def test_load_ini_conf_extension(self, tmp_path: Path) -> None:
+        f = tmp_path / "config.conf"
+        f.write_text("[database]\nhost = localhost\n")
+        data = load_config(f)
+        assert data["database"]["host"] == "localhost"
 
     def test_load_env(self, tmp_configs: dict[str, Path]) -> None:
         data = load_config(tmp_configs["env"])
