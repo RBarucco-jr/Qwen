@@ -125,6 +125,18 @@ if __name__ == "__main__":
     main()
 ```
 
+## Common pitfalls (learned from trial-and-error)
+
+1. **Typer varargs syntax** — `*overrides: str = typer.Argument(...)` is invalid Python (varargs can't have defaults). Use `overrides: list[str] = typer.Argument(None)` and convert to tuple with `tuple(overrides or [])` in the function body.
+
+2. **dotenv_values parameter name** — `python-dotenv`'s `dotenv_values()` accepts `dotenv_path=` as keyword argument, **not** `path=`. Passing `path=` raises `TypeError`.
+
+3. **Import ordering for ruff** — ruff's I001 rule requires: stdlib (alphabetically) → third-party (alphabetically) → local project imports. Within stdlib, `json` comes before `pathlib`; within third-party, `toml` before `typer` before `yaml`. Running `ruff check --fix` auto-sorts imports.
+
+4. **Trailing newlines** — ruff's W292 flags files missing a final newline. Run `ruff check --fix` to auto-fix these after writing files.
+
+5. **Unused imports in runner modules** — when using lazy imports (`from x import y` inside functions), don't also import at module level. The validator runner initially imported `yaml` and `toml` at top-level but never used them; ruff's F401 catches this.
+
 ## Initialization order
 
 1. Create directory structure (`src/<package>/`, `tests/`, submodules)
