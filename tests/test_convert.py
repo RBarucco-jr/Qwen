@@ -106,3 +106,7 @@ class TestRunConvert:
     def test_convert_unsupported_format(self, sample_json: Path) -> None:
         with pytest.raises((SystemExit, typer.Exit)):
             run_convert(str(sample_json), "xml")
+
+    def test_convert_no_output_prints_to_stdout(self, sample_json: Path) -> None:
+        # No output file — prints to console (no crash)
+        run_convert(str(sample_json), "yaml", None)
