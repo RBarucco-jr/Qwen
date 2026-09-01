@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from urllib.parse import urlparse
 
 import pytest
 import toml
@@ -220,8 +221,9 @@ class TestCLITemplate:
         )
         assert result.exit_code == 0
         assert output.exists()
-        content = output.read_text()
-        assert "prod.example.com" in content
+        content = output.read_text().strip()
+        parsed = urlparse(content)
+        assert parsed.hostname == "prod.example.com"
 
     def test_template_file_not_found(self) -> None:
         result = runner.invoke(app, ["template", "/nonexistent.tpl"])
